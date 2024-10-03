@@ -1,0 +1,28 @@
+{
+  "name": "ruidoproyecto",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "azure-kusto-data": "^7.0.0-alpha.3",
+    "expo": "~51.0.28",
+    "expo-location": "~17.0.1",
+    "expo-status-bar": "~1.12.1",
+    "react": "18.2.0",
+    "react-native": "0.74.5",
+    "react-native-chart-kit": "^6.12.0",
+    "react-native-geolocation-service": "^5.3.1",
+    "react-native-location": "^2.5.0",
+    "react-native-maps": "^1.18.0",
+    "react-native-open-maps": "^0.4.3",
+    "react-native-permissions": "^4.1.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0"
+  },
+  "private": true
+}
