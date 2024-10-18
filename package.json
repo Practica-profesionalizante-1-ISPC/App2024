@@ -8,6 +8,10 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/vector-icons": "^14.0.3",
+    "@geoapify/geocoder-autocomplete": "^2.0.3",
+    "@geoapify/react-geocoder-autocomplete": "^2.0.1",
+    "axios": "^1.7.7",
     "azure-kusto-data": "^7.0.0-alpha.3",
     "expo": "~51.0.28",
     "expo-location": "~17.0.1",
@@ -17,9 +21,11 @@
     "react-native-chart-kit": "^6.12.0",
     "react-native-geolocation-service": "^5.3.1",
     "react-native-location": "^2.5.0",
-    "react-native-maps": "^1.18.0",
+    "react-native-maps": "1.14.0",
     "react-native-open-maps": "^0.4.3",
-    "react-native-permissions": "^4.1.5"
+    "react-native-open-street-map": "^2.0.1",
+    "react-native-permissions": "^4.1.5",
+    "react-native-webview": "13.8.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

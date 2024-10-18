@@ -1,51 +1,108 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import MapView from "react-native-maps";
+//App.js
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import * as Location from 'expo-location';
 
-const App = () => {
-    const [location, setLocation] = useState(null);
+import MapViewComponent from './components/MapViewComponent';
+import SearchBarComponent from './components/SearchBarComponent';
+import { getRoute } from './utils/geoapifyApi';
 
-    useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                console.log('Permission to access location was denied');
-                return;
-            }
+export default function App() {
+  const [location, setLocation] = useState(null);
+  const [origin, setOrigin] = useState(null);
+  const [destination, setDestination] = useState(null);
+  const [isTypingOrigin, setIsTypingOrigin] = useState(false);
+  const [routeCoordinates, setRouteCoordinates] = useState([]);
 
-            let location = await Location.getCurrentPositionAsync({
-                accuracy: Location.Accuracy.High,
-                timeout: 10000
-            });
-            setLocation(location);
-        })();
-    }, []);
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.error('Permission to access location was denied');
+        return;
+      }
 
-    return (
-        <View style={styles.container}>
-            <MapView 
-                style={styles.map}
-                initialRegion={{
-                    latitude: -31.4201,
-                    longitude: -64.1888,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                }}
-                showsUserLocation
+      let currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation({
+        latitude: currentLocation.coords.latitude,
+        longitude: currentLocation.coords.longitude,
+      });
+    })();
+  }, []);
+
+  const handleFindRoute = async () => {
+    if (origin && destination) {
+      try {
+        const route = await getRoute(origin, destination);
+        //console.log('Ruta obtenida:', route);  // Agregar para ver si se obtiene la ruta
+        console.log('Ruta antes de setear:', route);
+
+        setRouteCoordinates(route);
+      } catch (error) {
+        console.error('Error al buscar la ruta:', error);
+        Alert.alert('Error', 'No se pudo encontrar la ruta. Inténtalo de nuevo.');
+      }
+    } else {
+      Alert.alert('Advertencia', 'Debes establecer tanto el origen como el destino');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      {location && (
+        <>
+          {/* Mapa */}
+          <MapViewComponent
+            location={location}
+            origin={origin}
+            destination={destination}
+            routeCoordinates={routeCoordinates}
+          />
+
+          {/* Cuadro de búsqueda para origen */}
+          <SearchBarComponent
+            searchType="origin"
+            setSearchResult={setOrigin}
+            setIsTyping={setIsTypingOrigin}
+          />
+
+          {/* Cuadro de búsqueda para destino, que desaparece mientras se escribe el origen */}
+          {!isTypingOrigin && (
+            <SearchBarComponent
+              searchType="destination"
+              setSearchResult={setDestination}
             />
-        </View>
-    );
-};
+          )}
+
+          {/* Botón para buscar la ruta */}
+          <TouchableOpacity style={styles.routeButton} onPress={handleFindRoute}>
+            <Text style={styles.routeButtonText}>Buscar Ruta</Text>
+          </TouchableOpacity>
+
+        
+        </>
+      )}
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 50,
-    },
-    map: {
-        flex: 1,
-    }
+  container: {
+    flex: 1,
+  },
+ 
+  routeButton: {
+    position: 'absolute',
+    top: 220,
+    right: 10,
+    backgroundColor: '#2196F3',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    zIndex: 1,
+  },
+  routeButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
 });
-
-export default App;
